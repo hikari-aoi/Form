@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold Note ベータ版アンケート</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8B6914;
+    --bg: #0D0C0A;
+    --surface: #141210;
+    --surface2: #1C1A16;
+    --border: rgba(201,168,76,0.2);
+    --text: #F0EAD6;
+    --text-muted: #7A7060;
+    --radius: 4px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% -10%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: clamp(22px, 5vw, 28px);
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* Question block */
+  .q-block {
+    margin-bottom: 36px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .q-block:nth-child(1) { animation-delay: 0.1s; }
+  .q-block:nth-child(2) { animation-delay: 0.2s; }
+  .q-block:nth-child(3) { animation-delay: 0.3s; }
+  .q-block:nth-child(4) { animation-delay: 0.4s; }
+
+  .q-label {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .q-num {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .q-text {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* Radio / Checkbox */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 28px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
+    font-size: 13px;
+    color: #A09880;
+  }
+
+  .option:hover {
+    border-color: var(--border);
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .option input[type="radio"],
+  .option input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--text-muted);
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .option input[type="radio"] { border-radius: 50%; }
+  .option input[type="checkbox"] { border-radius: 2px; }
+
+  .option input[type="radio"]:checked,
+  .option input[type="checkbox"]:checked {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+
+  .option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--bg);
+  }
+
+  .option input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 5px;
+    width: 4px; height: 7px;
+    border: 2px solid var(--bg);
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .option:has(input:checked) {
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.06);
+    color: var(--text);
+  }
+
+  /* Textarea */
+  textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    margin-left: 28px;
+    width: calc(100% - 28px);
+  }
+
+  textarea:focus {
+    border-color: rgba(201,168,76,0.5);
+  }
+
+  textarea::placeholder { color: var(--text-muted); }
+
+  /* Other input */
+  .other-input {
+    margin-top: 8px;
+    padding-left: 28px;
+  }
+
+  .other-input input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .other-input input:focus { border-color: rgba(201,168,76,0.5); }
+  .other-input input::placeholder { color: var(--text-muted); }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 36px 0;
+  }
+
+  /* Submit */
+  .submit-wrap {
+    padding-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button[type="submit"] {
+    background: var(--gold);
+    color: #0D0C0A;
+    border: none;
+    padding: 14px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button[type="submit"]:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  button[type="submit"]:active { transform: translateY(0); }
+
+  button[type="submit"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Success */
+  .success {
+    display: none;
+    text-align: center;
+    padding: 60px 0;
+  }
+
+  .success.show { display: block; }
+
+  .success-icon {
+    width: 56px; height: 56px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    color: var(--gold);
+    font-size: 22px;
+  }
+
+  .success h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .success p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* Error msg */
+  .error-msg {
+    font-size: 11px;
+    color: #C47A5A;
+    margin-top: 6px;
+    padding-left: 28px;
+    display: none;
+  }
+
+  .error-msg.show { display: block; }
+
+  /* Sending state */
+  .sending-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13,12,10,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sending-overlay.show { display: flex; }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sending-text {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">Beta Feedback — ①登録直後</div>
+    <h1>Gold Note ベータ版アンケート</h1>
+    <p class="subtitle">ご登録ありがとうございます。より良いアプリにするため、簡単なアンケートにご協力ください。<br>所要時間：約2分</p>
+  </div>
+
+  <!-- Form -->
+  <div id="form-area">
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">
+        <span class="q-num">Q 01</span>
+        <span class="q-text">FXを始めてどのくらいですか？</span>
+      </div>
+      <div class="options" id="q1-options">
+        <label class="option"><input type="radio" name="q1" value="3ヶ月未満"> 3ヶ月未満</label>
+        <label class="option"><input type="radio" name="q1" value="3ヶ月〜1年"> 3ヶ月〜1年</label>
+        <label class="option"><input type="radio" name="q1" value="1〜3年"> 1〜3年</label>
+        <label class="option"><input type="radio" name="q1" value="3年以上"> 3年以上</label>
+      </div>
+      <div class="error-msg" id="q1-err">選択してください</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">
+        <span class="q-num">Q 02</span>
+        <span class="q-text">主に取引している通貨ペアを教えてください（複数選択可）</span>
+      </div>
+      <div class="options" id="q2-options">
+        <label class="option"><input type="checkbox" name="q2" value="XAU/USD（ゴールド）"> XAU/USD（ゴールド）</label>
+        <label class="option"><input type="checkbox" name="q2" value="USD/JPY"> USD/JPY</label>
+        <label class="option"><input type="checkbox" name="q2" value="EUR/JPY"> EUR/JPY</label>
+        <label class="option"><input type="checkbox" name="q2" value="GBP/JPY"> GBP/JPY</label>
+        <label class="option"><input type="checkbox" name="q2" value="その他"> その他</label>
+      </div>
+      <div class="error-msg" id="q2-err">1つ以上選択してください</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">
+        <span class="q-num">Q 03</span>
+        <span class="q-text">トレードで今一番困っていることは何ですか？</span>
+      </div>
+      <div class="options" id="q3-options">
+        <label class="option"><input type="radio" name="q3" value="損切りができない"> 損切りができない</label>
+        <label class="option"><input type="radio" name="q3" value="エントリータイミングがわからない"> エントリータイミングがわからない</label>
+        <label class="option"><input type="radio" name="q3" value="感情でトレードしてしまう"> 感情でトレードしてしまう</label>
+        <label class="option"><input type="radio" name="q3" value="自分のトレードを振り返れていない"> 自分のトレードを振り返れていない</label>
+        <label class="option"><input type="radio" name="q3" value="その他"> その他（自由記述）</label>
+      </div>
+      <div class="other-input" id="q3-other-wrap" style="display:none;">
+        <input type="text" id="q3-other" placeholder="具体的に教えてください">
+      </div>
+      <div class="error-msg" id="q3-err">選択してください</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q4 -->
+    <div class="q-block">
+      <div class="q-label">
+        <span class="q-num">Q 04</span>
+        <span class="q-text">このアプリに一番期待することを教えてください</span>
+      </div>
+      <textarea id="q4" placeholder="自由にご記入ください"></textarea>
+      <div class="error-msg" id="q4-err">入力してください</div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button type="submit" id="submit-btn" onclick="submitForm()">回答を送信する</button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="success" id="success-area">
+    <div class="success-icon">✓</div>
+    <h2>ご回答ありがとうございました</h2>
+    <p>いただいたフィードバックをもとに、<br>より良いアプリを開発してまいります。</p>
+  </div>
+</div>
+
+<!-- Sending overlay -->
+<div class="sending-overlay" id="sending-overlay">
+  <div class="spinner"></div>
+  <div class="sending-text">送信中...</div>
+</div>
+
+<script>
+  // ── GASのWebアプリURLをここに設定 ──
+  const GAS_URL = 'YOUR_GAS_WEB_APP_URL';
+
+  // URLからUIDを取得
+  const uid = new URLSearchParams(window.location.search).get('uid') || 'unknown';
+
+  // Q3「その他」表示制御
+  document.querySelectorAll('input[name="q3"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('q3-other-wrap').style.display =
+        r.value === 'その他' && r.checked ? 'block' : 'none';
+    });
+  });
+
+  function validate() {
+    let ok = true;
+
+    // Q1
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    document.getElementById('q1-err').classList.toggle('show', !q1);
+    if (!q1) ok = false;
+
+    // Q2
+    const q2 = document.querySelectorAll('input[name="q2"]:checked');
+    document.getElementById('q2-err').classList.toggle('show', q2.length === 0);
+    if (q2.length === 0) ok = false;
+
+    // Q3
+    const q3 = document.querySelector('input[name="q3"]:checked');
+    document.getElementById('q3-err').classList.toggle('show', !q3);
+    if (!q3) ok = false;
+
+    // Q4
+    const q4 = document.getElementById('q4').value.trim();
+    document.getElementById('q4-err').classList.toggle('show', !q4);
+    if (!q4) ok = false;
+
+    return ok;
+  }
+
+  async function submitForm() {
+    if (!validate()) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    document.getElementById('sending-overlay').classList.add('show');
+
+    const q1 = document.querySelector('input[name="q1"]:checked').value;
+    const q2 = [...document.querySelectorAll('input[name="q2"]:checked')].map(e => e.value).join('、');
+    const q3raw = document.querySelector('input[name="q3"]:checked').value;
+    const q3 = q3raw === 'その他'
+      ? 'その他：' + (document.getElementById('q3-other').value.trim() || '（未入力）')
+      : q3raw;
+    const q4 = document.getElementById('q4').value.trim();
+
+    const payload = {
+      uid,
+      survey: '①登録直後',
+      timestamp: new Date().toISOString(),
+      q1, q2, q3, q4
+    };
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.error(e);
+    }
+
+    document.getElementById('sending-overlay').classList.remove('show');
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('success-area').classList.add('show');
+  }
+</script>
+</body>
+</html>
