@@ -464,7 +464,7 @@
 
 <script>
   // ── GASのWebアプリURLをここに設定 ──
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxHPgOUJVGvVzUhPnPx_Vpat3cRbyzKF6A3e6dJgHovG5W-F0Q6FmXfFnLLdk_jhXJO/exec';
+  const GAS_URL = 'YOUR_GAS_WEB_APP_URL';
 
   // URLからUIDを取得
   const uid = new URLSearchParams(window.location.search).get('uid') || 'unknown';
@@ -518,21 +518,17 @@
       : q3raw;
     const q4 = document.getElementById('q4').value.trim();
 
-    const payload = {
+    const params = new URLSearchParams({
       uid,
-      survey: '①登録直後',
-      timestamp: new Date().toISOString(),
+      survey: '登録直後結果フォーム',
       q1, q2, q3, q4
-    };
+    });
 
     try {
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    });
+      await fetch(GAS_URL + '?' + params.toString(), {
+        method: 'GET',
+        mode: 'no-cors'
+      });
     } catch (e) {
       console.error(e);
     }
